@@ -1,4 +1,4 @@
-import { Button, TextInput, Textarea, Alert } from "flowbite-react";
+import { Button, TextInput, Alert } from "flowbite-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import {
@@ -7,7 +7,7 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import { app } from "../firebase.js";
+import { app } from "../firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 const DashProfile = () => {
