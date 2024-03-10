@@ -1,4 +1,4 @@
-import { Button, TextInput, Alert } from "flowbite-react";
+import { Button, TextInput, Alert, Modal } from "flowbite-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -13,12 +13,16 @@ import {
   updateStart,
   updateSuccess,
   updateFailure,
+  deleteFailure,
+  deleteSuccess,
+  deleteStart,
 } from "../redux/user/userSlice";
 import "react-circular-progressbar/dist/styles.css";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 const DashProfile = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({});
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, error } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
@@ -26,7 +30,25 @@ const DashProfile = () => {
   const [imageFileUploading, setImageFileUploading] = useState(false);
   const [updatedUserSuccess, setUpdatedUserSuccess] = useState(null);
   const [updatedUserError, setUpdatedUserError] = useState(null);
+  const [showModel, setShowModel] = useState(false);
   const filePickerRef = useRef();
+  const handleDeleteAccount = async () => {
+    setShowModel(false);
+    try {
+      dispatch(deleteStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        dispatch(deleteFailure(data.message));
+      } else {
+        dispatch(deleteSuccess(data));
+      }
+    } catch (err) {
+      dispatch(deleteFailure(err.message));
+    }
+  };
   const handleSubmitUpdate = async (e) => {
     e.preventDefault();
     setUpdatedUserSuccess(null);
@@ -193,15 +215,57 @@ const DashProfile = () => {
         </Button>
       </form>
       <div className="flex justify-between mt-5">
-        <span className="text-red-500">Delete Account</span>
-        <span className="text-red-500">Sign out</span>
+        <span
+          onClick={() => setShowModel(true)}
+          className="text-red-500 cursor-pointer"
+        >
+          Delete Account
+        </span>
+        <span className="text-red-500 cursor-pointer">Sign out</span>
       </div>
       {updatedUserSuccess && (
-        <Alert color="success" className="mt-5">{updatedUserSuccess}</Alert>
+        <Alert color="success" className="mt-5">
+          {updatedUserSuccess}
+        </Alert>
       )}
       {updatedUserError && (
-        <Alert color="failure" className="mt-5">{updatedUserError}</Alert>
+        <Alert color="failure" className="mt-5">
+          {updatedUserError}
+        </Alert>
       )}
+      {error && (
+        <Alert color="failure" className="mt-5">
+          {error}
+        </Alert>
+      )}
+      <Modal
+        show={showModel}
+        onClose={() => setShowModel(false)}
+        size="md"
+        popup
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle
+              size={50}
+              color="gray"
+              className="h-14 w-14 text-gray-400 dark:text-gray-200 mx-auto mb-5"
+            />
+            <h1 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
+              Are you sure to delete your account? This action is irreversible!
+            </h1>
+            <div className="flex justify-center gap-4">
+              <Button color="failure" onClick={handleDeleteAccount}>
+                Yes , I'm sure
+              </Button>
+              <Button color="gray" onClick={() => setShowModel(false)}>
+                No , Cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
