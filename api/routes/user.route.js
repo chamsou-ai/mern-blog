@@ -4,7 +4,7 @@ const { verifyUser } = require("../utils/verifyUser.js")
 
 const router = express.Router()
 
-router.put("/update/:userId",verifyUser,updateUser)
+router.put('/update/:userId', verifyUser,updateUser);
 router.get("/test",test)
 
 module.exports = router
