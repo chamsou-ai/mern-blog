@@ -17,7 +17,11 @@ const userSchema = mongoose.Schema({
   },
   profilePicture:{
     type:String,
-    default: "https://t4.ftcdn.net/jpg/04/83/90/95/360_F_483909563_Bupx0k1Nqdz2tXPs78semH3IoGEjehgF.jpg",
+    default: "https://www.flaticon.com/free-icon/user_149071?term=user&page=1&position=12&origin=tag&related_id=149071",
+  },
+  isAdmin:{
+    type:Boolean,
+    default: false,
   }
   },{timestamps:true}
 );
