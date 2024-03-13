@@ -2,8 +2,9 @@ const express = require('express')
 const mongoose = require("mongoose")
 require("dotenv").config();
 const userRouter = require("./routes/user.route.js")
-const cookieParser = require('cookie-parser');
 const authRouter = require("./routes/auth.route.js")
+const create = require("./routes/post.route.js")
+const cookieParser = require('cookie-parser');
 
 
 
@@ -25,6 +26,8 @@ app.use(cookieParser())
 app.use("/api/user",userRouter)
 
 app.use("/api/auth", authRouter)
+
+app.use("/api/post", create)
 
 // Create middleware
 
